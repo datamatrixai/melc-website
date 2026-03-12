@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts | MELC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- PAGE SPECIFIC STYLES --- */
+        body { background-attachment: fixed; }
+        .accounts-section {
+            padding: 140px 5% 80px; 
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* --- AUTH GRID --- */
+        .auth-grid {
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;
+            background: rgba(0, 31, 63, 0.4); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px;
+            overflow: hidden; padding: 50px;
+            max-width: 1100px; width: 100%; margin-top: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-form h3 { color: white; font-family: 'Outfit', sans-serif; margin-bottom: 25px; font-size: 1.5rem; }
+
+        /* --- TOGGLE BUTTONS --- */
+        .auth-toggle { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .toggle-btn { background: none; border: none; color: #b0c4de; font-size: 1rem; cursor: pointer; padding: 5px 10px; font-family: 'Outfit', sans-serif; transition: color 0.3s; }
+        .toggle-btn.active { color: #00ff7f; border-bottom: 2px solid #00ff7f; }
+
+        /* --- PROFILE LOCK STATE --- */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05); height: 100%;
+            display: flex; flex-direction: column; justify-content: center;
+            transition: all 0.5s ease;
+        }
+        
+        .locked-content { filter: blur(8px); pointer-events: none; opacity: 0.5; user-select: none; }
+        
+        .lock-overlay {
+            position: absolute; top: 50%; left: 70%; 
+            transform: translate(-50%, -50%);
+            text-align: center; color: white; z-index: 10;
+            display: block; 
+        }
+
+        /* --- DASHBOARD ELEMENTS --- */
+        .progress-bar { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-blue); width: 45%; border-radius: 4px; }
+        .plan-badge { display: inline-block; background: rgba(0, 255, 127, 0.1); color: #00ff7f; padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; margin-top: 5px; border: 1px solid rgba(0, 255, 127, 0.2); font-weight: 600; }
+        .usage-stat { display: flex; justify-content: space-between; margin-bottom: 10px; color: #b0c4de; font-size: 0.9rem; }
+        .section-header-accounts { text-align: center; margin-bottom: 20px; }
+        .form-hidden { display: none; }
+
+        /* Plan Selector Style */
+        .plan-select {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 10px; border-radius: 5px; width: 100%;
+            margin-top: 10px; font-family: 'Outfit', sans-serif;
+        }
+
+        @media (max-width: 900px) { .auth-grid { grid-template-columns: 1fr; padding: 30px; } .profile-card { margin-top: 30px; } .lock-overlay { left: 50%; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="logo.png" alt="DataMatrix Logo" class="logo">
+            <div class="logo-text">
+                <span class="text-white">Datamatrix</span><span class="text-white">.AI</span>
+            </div>
+        </a>
+       <nav>
+            <ul>
+                <li><a href="melc.html">Home</a></li>
+                <li><a href="melc.html#how-it-works">Features</a></li>
+                <li><a href="melc.html#pricing">Plans</a></li>
+                
+                <li id="nav-login-item"><a href="accounts.html" style="color: #00ff7f;">Login</a></li>
+                <li id="nav-user-item" style="display: none; color: white; font-weight: 600; border: 1px solid rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px;">
+                    Hi, <span id="header-username">User</span>
+                </li>
+            </ul>
+        </nav>
+        <a href="melc.html#demo" class="btn-reach">Request Demo</a>
+    </header>
+
+    <section class="accounts-section">
+        <div class="section-header-accounts">
+            <h2 class="section-title">Account Management</h2>
+            <p class="section-subtitle">Login to view your live dashboard.</p>
+        </div>
+
+        <div class="auth-grid">
+            <div class="auth-form">
+                <div class="auth-toggle">
+                    <button id="btn-show-login" class="toggle-btn active" onclick="toggleForm('login')">Sign In</button>
+                    <button id="btn-show-signup" class="toggle-btn" onclick="toggleForm('signup')">Create Account</button>
+                </div>
+
+                <form id="loginForm">
+                    <input type="hidden" name="action" value="login">
+                    <h3 style="font-size: 1.2rem;">Welcome Back</h3>
+                    <div class="form-group">
+                        <label style="color: #b0c4de; font-size: 0.9rem; margin-bottom: 5px; display:block;">Work Email</label>
+                        <input type="email" name="work_email" id="login_email" placeholder="name@company.com" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: #b0c4de; font-size: 0.9rem; margin-bottom: 5px; display:block;">Password</label>
+                        <input type="password" name="password" placeholder="••••••••" class="form-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn" style="margin-bottom: 20px;">Log In</button>
+                </form>
+
+                <form id="signupForm" class="form-hidden">
+                    <input type="hidden" name="action" value="signup">
+                    <h3 style="font-size: 1.2rem;">Create New Account</h3>
+                    <div class="form-group">
+                        <label style="color: #b0c4de; font-size: 0.9rem; margin-bottom: 5px; display:block;">Full Name</label>
+                        <input type="text" name="fullname" placeholder="John Doe" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: #b0c4de; font-size: 0.9rem; margin-bottom: 5px; display:block;">Work Email</label>
+                        <input type="email" name="work_email" placeholder="name@company.com" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: #b0c4de; font-size: 0.9rem; margin-bottom: 5px; display:block;">Password</label>
+                        <input type="password" name="password" placeholder="Create Password" class="form-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn" style="margin-bottom: 20px; background: transparent; border: 1px solid #00ff7f; color: #00ff7f;">Create Account</button>
+                </form>
+            </div>
+
+            <div class="profile-details" style="position: relative;">
+                
+                <div id="lockOverlay" class="lock-overlay">
+                    <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.5);"></i>
+                    <h3 style="color: white;">Dashboard Locked</h3>
+                    <p style="color: #b0c4de;">Please sign in to view usage.</p>
+                </div>
+
+                <div id="profileContent" class="profile-card locked-content">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                        <div>
+                            <h4 id="display-plan-name" style="color: #fff; font-size: 1.4rem; margin-bottom: 5px;">Starter Plan</h4>
+                            <span class="plan-badge">Active</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <h2 style="color: var(--accent-blue); margin: 0; font-size: 2rem;">--</h2>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px;">
+                    
+                    <div class="usage-stat"><span>Transcription Hours</span><span>0 / 10 hrs</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
+                    
+                    <label style="color: white; font-size: 0.9rem; margin-bottom: 5px; display: block;">Change Subscription:</label>
+                    <select id="plan-selector" class="plan-select">
+                        <option value="Starter">Starter ($49/mo)</option>
+                        <option value="Professional">Professional ($149/mo)</option>
+                        <option value="Enterprise">Enterprise (Custom)</option>
+                    </select>
+
+                    <div style="margin-top: 15px; display: flex; gap: 15px;">
+                        <button class="btn-outline" style="flex: 1; font-size: 0.9rem; padding: 10px;">View Invoices</button>
+                        <button id="btn-save-plan" class="btn-primary" style="flex: 1; font-size: 0.9rem; padding: 10px; border: none;">Save Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">       
+            <div class="footer-col company-info">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="DataMatrix AI Logo" class="logo-img">
+                    <h2>Datamatrix<span class="highlight">.AI</span></h2>
+                </div>
+                <p class="company-desc">Transforming businesses through innovative AI solutions.</p>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-heading">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Main Home</a></li>
+                    <li><a href="melc.html">MELC Product</a></li>
+                    <li><a href="melc.html#pricing">Plans</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom"><div class="copyright">&copy; 2025 DataMatrixai. All rights reserved.</div></div>
+    </footer>
+
+    <script>
+        // --- 1. TOGGLE FORMS ---
+        function toggleForm(type) {
+            if (type === 'login') {
+                document.getElementById('loginForm').classList.remove('form-hidden');
+                document.getElementById('signupForm').classList.add('form-hidden');
+                document.getElementById('btn-show-login').classList.add('active');
+                document.getElementById('btn-show-signup').classList.remove('active');
+            } else {
+                document.getElementById('loginForm').classList.add('form-hidden');
+                document.getElementById('signupForm').classList.remove('form-hidden');
+                document.getElementById('btn-show-login').classList.remove('active');
+                document.getElementById('btn-show-signup').classList.add('active');
+            }
+        }
+
+        // --- 2. BACKEND CONNECTION ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxm6F7W0PG1M0V8rhR15jx4Ari2QWz3nn5eBj0EOH65ehUmGMFHdRbkY4b1nNbe_tUAlg/exec';
+        let currentUserEmail = ""; // To track who is logged in
+
+        // HELPER: Update UI State
+        function updateUI(fullname, plan) {
+            // Unlock Dashboard
+            document.getElementById('lockOverlay').style.display = 'none';
+            document.getElementById('profileContent').classList.remove('locked-content');
+            
+            // Update Header Name
+            document.getElementById('nav-login-item').style.display = 'none';
+            document.getElementById('nav-user-item').style.display = 'block';
+            document.getElementById('header-username').innerText = fullname;
+
+            // Update Plan Display & Dropdown
+            document.getElementById('display-plan-name').innerText = plan + " Plan";
+            document.getElementById('plan-selector').value = plan;
+        }
+
+        // Handle SIGN UP
+        document.getElementById('signupForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Creating...";
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
+                .then(res => res.json())
+                .then(data => {
+                    alert("Account Created! Default plan is Starter. Please Sign In.");
+                    e.target.reset();
+                    toggleForm('login'); 
+                    btn.innerText = originalText;
+                })
+                .catch(err => { alert("Error connecting."); console.error(err); });
+        });
+
+        // Handle LOGIN
+        document.getElementById('loginForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Verifying...";
+            
+            // Capture email for later use
+            currentUserEmail = document.getElementById('login_email').value;
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        // SUCCESS: Pass user data to UI updater
+                        updateUI(data.user.fullname, data.user.plan);
+                        alert("Login Successful!");
+                    } else {
+                        alert("Invalid Credentials.");
+                    }
+                    btn.innerText = originalText;
+                })
+                .catch(err => { alert("Error connecting."); console.error(err); });
+        });
+
+        // Handle SAVE PLAN
+        document.getElementById('btn-save-plan').addEventListener('click', () => {
+            if(!currentUserEmail) { alert("Please login first."); return; }
+            
+            const newPlan = document.getElementById('plan-selector').value;
+            const btn = document.getElementById('btn-save-plan');
+            btn.innerText = "Saving...";
+
+            const formData = new FormData();
+            formData.append('action', 'update_plan');
+            formData.append('work_email', currentUserEmail);
+            formData.append('plan', newPlan);
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert("Plan Updated Successfully! It will appear on next login.");
+                        document.getElementById('display-plan-name').innerText = newPlan + " Plan";
+                    } else {
+                        alert("Error updating plan.");
+                    }
+                    btn.innerText = "Save Plan";
+                });
+        });
+    </script>
+
+</body>
+</html>
