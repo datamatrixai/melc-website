@@ -159,35 +159,6 @@
         </nav>
         <a href="#contact" class="btn-reach">Contact Us</a>
     </header>
-
-    <script>
-
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwIMDVRCGLxUJJRiQpxjIyoqu_eCSKP8NSIha_df9tIqQHau41DbtMPCePSjreEFw0W/exec";
-
-    document.getElementById("contactForm").addEventListener("submit", function(e){
-
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        formData.append("action","contact");
-
-        fetch(scriptURL,{
-            method:"POST",
-            body:formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert("Message sent successfully");
-            document.getElementById("contactForm").reset();
-        })
-        .catch(err=>{
-            alert("Error sending message");
-            console.error(err);
-        });
-
-    });
-
-    </script>
     
     <section class="hero">
         <div class="hero-header-container">
@@ -396,6 +367,8 @@
                 <div class="form-column">
                     <!-- <form action="#" method="POST" class="contact-form"> -->
                     <form id="contactForm" class="contact-form">
+                        <input type="hidden" name="action" value="contact">
+
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Name" required class="form-input">
                         </div>
@@ -570,6 +543,52 @@
                 introText.style.display = 'none';
             }
         });
+
     </script>
+
+    <script>
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwIMDVRCGLxUJJRiQpxjIyoqu_eCSKP8NSIha_df9tIqQHau41DbtMPCePSjreEFw0W/exec";
+
+    const form = document.getElementById("contactForm");
+
+    form.addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        const btn = form.querySelector("button");
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+
+        const formData = new FormData(form);
+        formData.append("action","contact");
+
+        fetch(scriptURL,{
+            method:"POST",
+            body:formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if(data.status === "success"){
+                alert("Message sent successfully!");
+                form.reset();
+            }else{
+                alert(data.message || "Error sending message");
+            }
+
+            btn.innerText = originalText;
+
+        })
+        .catch(err=>{
+            alert("Connection error");
+            console.error(err);
+            btn.innerText = originalText;
+        });
+
+    });
+
+    </script>
+
 </body>
 </html>
