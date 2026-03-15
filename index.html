@@ -306,7 +306,7 @@
                     We don’t have any open positions right now. That said, we’re always interested in meeting people who are passionate about AI, data, and meaningful problem-solving.
                 </p>
                 <div style="margin-top: 30px;">
-                    <a href="mailto:admin@datamatrixai.co.in" class="btn-outline" style="border: 1px solid #b0c4de; color: #b0c4de; padding: 10px 20px; border-radius: 20px; text-decoration: none; transition: 0.3s;">Stay in Touch</a>
+                    <a href="/cdn-cgi/l/email-protection#5130353c383f11353025303c302523382930387f323e7f383f" class="btn-outline" style="border: 1px solid #b0c4de; color: #b0c4de; padding: 10px 20px; border-radius: 20px; text-decoration: none; transition: 0.3s;">Stay in Touch</a>
                 </div>
             </div>
 
@@ -367,7 +367,6 @@
                 <div class="form-column">
                     <!-- <form action="#" method="POST" class="contact-form"> -->
                     <form id="contactForm" class="contact-form">
-                        <input type="hidden" name="action" value="contact">
 
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Name" required class="form-input">
@@ -407,7 +406,7 @@
                         </div>
                         <div class="info-text">
                             <h4>Email</h4>
-                            <p>admin@datamatrixai.co.in</p>
+                            <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="94f5f0f9fdfad4f0f5e0f5f9f5e0e6fdecf5fdbaf7fbbafdfa">[email&#160;protected]</a></p>
                         </div>
                     </div>
 
@@ -501,7 +500,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
@@ -574,15 +573,15 @@
                 alert("Message sent successfully!");
                 form.reset();
             }else{
-                alert(data.message || "Error sending message");
+                alert(data.message || "Error sending message. Please try again.");
             }
 
-            btn.innerText = originalText;
-
         })
-        .catch(err=>{
-            alert("Connection error");
-            console.error(err);
+        .catch(err => {
+            console.error('Error!', err.message);
+            alert("Error! Something went wrong. Please try again.");
+        })
+        .finally(() => {
             btn.innerText = originalText;
         });
 

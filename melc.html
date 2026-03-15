@@ -827,7 +827,7 @@
     </footer>
 
     <script>
-        const form = document.querySelector('.contact-form');
+        const form = document.getElementById('demoForm');
 
         if (form) {
             form.addEventListener('submit', e => {
@@ -838,6 +838,7 @@
                 
                 // 1. Change button text to indicate processing
                 submitBtn.innerText = 'Sending...';
+                submitBtn.disabled = true;
                 
                 // 2. Capture the data
                 const formData = new FormData(form);
@@ -848,17 +849,23 @@
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbwIMDVRCGLxUJJRiQpxjIyoqu_eCSKP8NSIha_df9tIqQHau41DbtMPCePSjreEFw0W/exec'; 
 
                 fetch(scriptURL, { method: 'POST', body: formData })
-                    .then(response => {
-                        // Success!
-                        alert("Success! Your details have been stored in the Excel sheet.");
-                        form.reset();
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert("Success! Your demo request has been submitted. We'll be in touch soon.");
+                            form.reset();
+                        } else {
+                            alert("Error: " + (data.message || "Something went wrong. Please try again."));
+                        }
                         submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
                     })
                     .catch(error => {
                         // Error!
                         console.error('Error!', error.message);
                         alert("Error! Something went wrong. Please check your console.");
                         submitBtn.innerText = originalText;
+                        submitBtn.disabled = false;
                     });
             });
         }

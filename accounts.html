@@ -287,17 +287,17 @@
             fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.result === 'success') {
+                    if (data.status === 'success') {
                         // SUCCESS: Pass user data to UI updater
-                        updateUI(data.user.fullname, data.user.plan);
+                        updateUI(data.fullname, data.plan);
 
                         localStorage.setItem("melcUser", JSON.stringify({
-                            fullname: data.user.fullname,
-                            email: data.user.work_email,
-                            plan: data.user.plan
+                            fullname: data.fullname,
+                            email: currentUserEmail,
+                            plan: data.plan
                         }));
 
-                        alert("Login Successful!!! Welcome " + data.user.fullname + "!");
+                        alert("Login Successful!!! Welcome " + data.fullname + "!");
                     } else {
                         alert("Invalid Credentials.");
                     }
@@ -322,7 +322,7 @@
             fetch(scriptURL, { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.result === 'success') {
+                    if (data.status === 'success') {
                         alert("Plan Updated Successfully!");
 
                         document.getElementById('display-plan-name').innerText = newPlan + " Plan";
