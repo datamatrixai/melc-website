@@ -476,35 +476,6 @@
         <a href="#demo" class="btn-reach">Request Demo</a>
     </header>
 
-    <script>
-
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwIMDVRCGLxUJJRiQpxjIyoqu_eCSKP8NSIha_df9tIqQHau41DbtMPCePSjreEFw0W/exec";
-
-    document.getElementById("demoForm").addEventListener("submit", function(e){
-
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        formData.append("action","demo");
-
-        fetch(scriptURL,{
-            method:"POST",
-            body:formData
-        })
-        .then(res => res.json())
-        .then(data=>{
-            alert("Demo request submitted");
-            document.getElementById("demoForm").reset();
-        })
-        .catch(err=>{
-            alert("Error sending request");
-            console.error(err);
-        });
-
-    });
-
-    </script>
-
     <section class="hero hero-compact">
         <div class="hero-header-container" style="margin-bottom: 20px;">
             <div class="hero-header-content">
@@ -870,6 +841,7 @@
                 
                 // 2. Capture the data
                 const formData = new FormData(form);
+                formData.append("action","demo");
                 
                 // 3. SEND TO GOOGLE SHEET (Backend)
                 // *** PASTE YOUR URL INSIDE THE QUOTES BELOW ***
