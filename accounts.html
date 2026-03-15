@@ -187,6 +187,8 @@
                         <button class="btn-outline" style="flex: 1; font-size: 0.9rem; padding: 10px;">View Invoices</button>
                         <button id="btn-save-plan" class="btn-primary" style="flex: 1; font-size: 0.9rem; padding: 10px; border: none;">Save Plan</button>
                     </div>
+
+                    <button id="logoutBtn" class="btn-outline" style="margin-top: 20px; width: 100%; font-size: 0.9rem; padding: 10px; border: none;">Log Out</button>
                 </div>
             </div>
         </div>
@@ -264,7 +266,12 @@
                     toggleForm('login'); 
                     btn.innerText = originalText;
                 })
-                .catch(err => { alert("Error connecting."); console.error(err); });
+                .catch(err => {
+                    alert("Error connecting.");
+                    console.error(err);
+                    btn.innerText = originalText;
+                });
+                
         });
 
         // Handle LOGIN
@@ -283,7 +290,14 @@
                     if (data.result === 'success') {
                         // SUCCESS: Pass user data to UI updater
                         updateUI(data.user.fullname, data.user.plan);
-                        alert("Login Successful!");
+
+                        localStorage.setItem("melcUser", JSON.stringify({
+                            fullname: data.user.fullname,
+                            email: data.user.work_email,
+                            plan: data.user.plan
+                        }));
+
+                        alert("Login Successful!!! Welcome " + data.user.fullname + "!");
                     } else {
                         alert("Invalid Credentials.");
                     }
@@ -309,14 +323,34 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.result === 'success') {
-                        alert("Plan Updated Successfully! It will appear on next login.");
+                        alert("Plan Updated Successfully!");
+
                         document.getElementById('display-plan-name').innerText = newPlan + " Plan";
+
+                        let user = JSON.parse(localStorage.getItem("melcUser") || "{}");
+                        user.plan = newPlan;
+                        localStorage.setItem("melcUser", JSON.stringify(user));
                     } else {
                         alert("Error updating plan.");
                     }
                     btn.innerText = "Save Plan";
                 });
         });
+
+        window.addEventListener("DOMContentLoaded", function(){
+        const user = localStorage.getItem("melcUser");
+        if(user){
+            const parsed = JSON.parse(user);
+            currentUserEmail = parsed.email;
+            updateUI(parsed.fullname, parsed.plan);
+        }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", function(){
+            localStorage.removeItem("melcUser");
+            location.reload();
+        });
+
     </script>
 
 </body>
