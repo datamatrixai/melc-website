@@ -160,6 +160,35 @@
         <a href="#contact" class="btn-reach">Contact Us</a>
     </header>
 
+    <script>
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwIMDVRCGLxUJJRiQpxjIyoqu_eCSKP8NSIha_df9tIqQHau41DbtMPCePSjreEFw0W/exec";
+
+    document.getElementById("contactForm").addEventListener("submit", function(e){
+
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        formData.append("action","contact");
+
+        fetch(scriptURL,{
+            method:"POST",
+            body:formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Message sent successfully");
+            document.getElementById("contactForm").reset();
+        })
+        .catch(err=>{
+            alert("Error sending message");
+            console.error(err);
+        });
+
+    });
+
+    </script>
+    
     <section class="hero">
         <div class="hero-header-container">
             <div class="hero-header-content">
@@ -306,7 +335,7 @@
                     We don’t have any open positions right now. That said, we’re always interested in meeting people who are passionate about AI, data, and meaningful problem-solving.
                 </p>
                 <div style="margin-top: 30px;">
-                    <a href="mailto:reach-us@datamatrixai.co.in" class="btn-outline" style="border: 1px solid #b0c4de; color: #b0c4de; padding: 10px 20px; border-radius: 20px; text-decoration: none; transition: 0.3s;">Stay in Touch</a>
+                    <a href="mailto:admin@datamatrixai.co.in" class="btn-outline" style="border: 1px solid #b0c4de; color: #b0c4de; padding: 10px 20px; border-radius: 20px; text-decoration: none; transition: 0.3s;">Stay in Touch</a>
                 </div>
             </div>
 
@@ -332,7 +361,7 @@
                     <div class="social-links">
                         <a href="https://www.linkedin.com/in/georgejohnsonin/" class="social-icon"><i class="fab fa-linkedin"></i></a>
                         <!--a href="#" class="social-icon"><i class="fab fa-github"></i></a-->
-                        <!--a href="#" class="social-icon"><i class="fab fa-twitter"></i></a-->
+                        <!--a href="https://x.com/GeorgeJohnsun" class="social-icon"><i class="fab fa-twitter"></i></a-->
                     </div>
                 </div>
 
@@ -365,7 +394,8 @@
             <div class="contact-wrapper">
                 
                 <div class="form-column">
-                    <form action="#" method="POST" class="contact-form">
+                    <!-- <form action="#" method="POST" class="contact-form"> -->
+                    <form id="contactForm" class="contact-form">
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Name" required class="form-input">
                         </div>
@@ -404,7 +434,7 @@
                         </div>
                         <div class="info-text">
                             <h4>Email</h4>
-                            <p>reach-us@datamatrixai.co.in</p>
+                            <p>admin@datamatrixai.co.in</p>
                         </div>
                     </div>
 
